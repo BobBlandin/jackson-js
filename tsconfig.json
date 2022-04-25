@@ -9,6 +9,8 @@
     "module": "CommonJS",
     "moduleResolution": "node",
     "importHelpers": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
     "target": "ES5",
     "typeRoots": [
       "node_modules/@types"

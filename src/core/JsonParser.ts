@@ -61,8 +61,8 @@ import {
   JsonSetterNulls
 } from '../decorators';
 import {JacksonError} from './JacksonError';
-import * as cloneDeep from 'lodash.clonedeep';
-import * as clone from 'lodash.clone';
+const clone = require('lodash.clone');
+const cloneDeep = require('lodash.clonedeep');
 import {DefaultDeserializationFeatureValues} from '../databind';
 
 /**
@@ -654,11 +654,13 @@ export class JsonParser<T> {
     const jsonIdentityInfo: JsonIdentityInfoOptions =
       getMetadata('JsonIdentityInfo', currentMainCreator, null, context);
 
+    // console.log('before');
     if (jsonIdentityInfo) {
       const id: string = typeof value === 'object' ? value[jsonIdentityInfo.property] : value;
-
       const scope: string = jsonIdentityInfo.scope || '';
+
       const scopedId = this.generateScopedId(scope, id);
+      // console.log('after ' + scopedId + ' : ' + globalContext.globalValueAlreadySeen.has(scopedId));
 
       if (globalContext.globalValueAlreadySeen.has(scopedId)) {
         const instance = globalContext.globalValueAlreadySeen.get(scopedId);
@@ -1613,10 +1615,13 @@ export class JsonParser<T> {
 
     if (jsonIdentityInfo) {
       const id: string = obj[jsonIdentityInfo.property];
+
+
       const scope: string = jsonIdentityInfo.scope || '';
       const scopedId = this.generateScopedId(scope, id);
       if (!globalContext.globalValueAlreadySeen.has(scopedId)) {
         globalContext.globalValueAlreadySeen.set(scopedId, replacement);
+        console.log('Register id [' + id + ']: ' + scopedId);
       }
 
       delete obj[jsonIdentityInfo.property];
